@@ -9,7 +9,7 @@ fi
 if [ ! -d "./logs/LongForecasting/univariate" ]; then
     mkdir ./logs/LongForecasting/univariate
 fi
-model_name=Linear
+model_name=RNN
 
 # ETTm1, univariate results, pred_len= 96 192 336 720
 python -u run_longExp.py \
@@ -23,7 +23,6 @@ python -u run_longExp.py \
   --pred_len 96 \
   --enc_in 1 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 8 --learning_rate 0.0001 --feature S >logs/LongForecasting/$model_name'_'fS_ETTm1_336_96.log
 
 python -u run_longExp.py \
@@ -37,7 +36,6 @@ python -u run_longExp.py \
   --pred_len 192 \
   --enc_in 1 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 8 --learning_rate 0.0001 --feature S >logs/LongForecasting/$model_name'_'fS_ETTm1_336_192.log
 
 python -u run_longExp.py \
@@ -51,7 +49,6 @@ python -u run_longExp.py \
   --pred_len 336 \
   --enc_in 1 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 8 --learning_rate 0.0001 --feature S >logs/LongForecasting/$model_name'_'fS_ETTm1_336_336.log
 
 python -u run_longExp.py \
@@ -65,5 +62,4 @@ python -u run_longExp.py \
   --pred_len 720 \
   --enc_in 1 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 8 --learning_rate 0.0001 --feature S >logs/LongForecasting/$model_name'_'fS_ETTm1_336_720.log

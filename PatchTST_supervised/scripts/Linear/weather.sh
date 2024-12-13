@@ -7,7 +7,7 @@ if [ ! -d "./logs/LongForecasting" ]; then
     mkdir ./logs/LongForecasting
 fi
 seq_len=336
-model_name=DLinear
+model_name=Linear
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -21,7 +21,8 @@ python -u run_longExp.py \
   --pred_len 96 \
   --enc_in 21 \
   --des 'Exp' \
-  --itr 1 --batch_size 16  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'96.log
+  --patience 20 \
+  --itr 1 --batch_size 128  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'96.log
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -35,7 +36,8 @@ python -u run_longExp.py \
   --pred_len 192 \
   --enc_in 21 \
   --des 'Exp' \
-  --itr 1 --batch_size 16  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'192.log
+  --patience 20 \
+  --itr 1 --batch_size 128  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'192.log
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -49,7 +51,8 @@ python -u run_longExp.py \
   --pred_len 336 \
   --enc_in 21 \
   --des 'Exp' \
-  --itr 1 --batch_size 16  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'336.log
+  --patience 20 \
+  --itr 1 --batch_size 128  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'336.log
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -63,4 +66,5 @@ python -u run_longExp.py \
   --pred_len 720 \
   --enc_in 21 \
   --des 'Exp' \
-  --itr 1 --batch_size 16  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'720.log
+  --patience 20 \
+  --itr 1 --batch_size 128  >logs/LongForecasting/$model_name'_'Weather_$seq_len'_'720.log

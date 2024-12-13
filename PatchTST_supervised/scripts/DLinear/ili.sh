@@ -7,7 +7,7 @@ if [ ! -d "./logs/LongForecasting" ]; then
     mkdir ./logs/LongForecasting
 fi
 seq_len=104
-model_name=Linear
+model_name=DLinear
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -22,7 +22,6 @@ python -u run_longExp.py \
   --pred_len 24 \
   --enc_in 7 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 32 --learning_rate 0.01 >logs/LongForecasting/$model_name'_'ili_$seq_len'_'24.log
 
 python -u run_longExp.py \
@@ -38,7 +37,6 @@ python -u run_longExp.py \
   --pred_len 36 \
   --enc_in 7 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 32 --learning_rate 0.01  >logs/LongForecasting/$model_name'_'ili_$seq_len'_'36.log
 
 python -u run_longExp.py \
@@ -54,7 +52,6 @@ python -u run_longExp.py \
   --pred_len 48 \
   --enc_in 7 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 32 --learning_rate 0.01  >logs/LongForecasting/$model_name'_'ili_$seq_len'_'48.log
 
 python -u run_longExp.py \
@@ -70,5 +67,4 @@ python -u run_longExp.py \
   --pred_len 60 \
   --enc_in 7 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 32 --learning_rate 0.01  >logs/LongForecasting/$model_name'_'ili_$seq_len'_'60.log

@@ -7,7 +7,7 @@ if [ ! -d "./logs/LongForecasting" ]; then
     mkdir ./logs/LongForecasting
 fi
 seq_len=336
-model_name=Linear
+model_name=DLinear
 
 python -u run_longExp.py \
   --is_training 1 \
@@ -21,7 +21,6 @@ python -u run_longExp.py \
   --pred_len 96 \
   --enc_in 321 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 16  --learning_rate 0.001 >logs/LongForecasting/$model_name'_'electricity_$seq_len'_'96.log 
 
 python -u run_longExp.py \
@@ -36,7 +35,6 @@ python -u run_longExp.py \
   --pred_len 192 \
   --enc_in 321 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 16  --learning_rate 0.001 >logs/LongForecasting/$model_name'_'electricity_$seq_len'_'192.log  
 
 python -u run_longExp.py \
@@ -51,7 +49,6 @@ python -u run_longExp.py \
   --pred_len 336 \
   --enc_in 321 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 16  --learning_rate 0.001  >logs/LongForecasting/$model_name'_'electricity_$seq_len'_'336.log  
 
 python -u run_longExp.py \
@@ -66,5 +63,4 @@ python -u run_longExp.py \
   --pred_len 720 \
   --enc_in 321 \
   --des 'Exp' \
-  --patience 20 \
   --itr 1 --batch_size 16  --learning_rate 0.001  >logs/LongForecasting/$model_name'_'electricity_$seq_len'_'720.log  

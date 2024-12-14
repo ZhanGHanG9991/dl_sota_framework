@@ -1,6 +1,6 @@
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
-from models import Informer, Autoformer, Transformer, DLinear, Linear, NLinear, PatchTST, RNN
+from models import Informer, Autoformer, Transformer, DLinear, Linear, NLinear, PatchTST, RNN, VanDerPol
 from utils.tools import EarlyStopping, adjust_learning_rate, visual, test_params_flop
 from utils.metrics import metric
 
@@ -32,7 +32,8 @@ class Exp_Main(Exp_Basic):
             'NLinear': NLinear,
             'Linear': Linear,
             'PatchTST': PatchTST,
-            'RNN': RNN
+            'RNN': RNN,
+            'VanDerPol': VanDerPol
         }
         model = model_dict[self.args.model].Model(self.args).float()
 
@@ -55,6 +56,7 @@ class Exp_Main(Exp_Basic):
     def vali(self, vali_data, vali_loader, criterion):
         total_loss = []
         self.model.eval()
+        hidden = None
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(vali_loader):
                 batch_x = batch_x.float().to(self.device)
@@ -71,6 +73,7 @@ class Exp_Main(Exp_Basic):
                     with torch.cuda.amp.autocast():
                         if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                             outputs = self.model(batch_x)
+
                         else:
                             if self.args.output_attention:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -79,6 +82,10 @@ class Exp_Main(Exp_Basic):
                 else:
                     if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                         outputs = self.model(batch_x)
+                    
+                    elif 'VanDerPol' in self.args.model:
+                        outputs, hidden = self.model(batch_x, hidden)
+
                     else:
                         if self.args.output_attention:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -133,6 +140,7 @@ class Exp_Main(Exp_Basic):
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader):
                 iter_count += 1
                 model_optim.zero_grad()
+                hidden = None
                 batch_x = batch_x.float().to(self.device)
 
                 batch_y = batch_y.float().to(self.device)
@@ -148,6 +156,10 @@ class Exp_Main(Exp_Basic):
                     with torch.cuda.amp.autocast():
                         if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                             outputs = self.model(batch_x)
+
+                        elif 'VanDerPol' in self.args.model:
+                            outputs, hidden = self.model(batch_x, hidden)
+
                         else:
                             if self.args.output_attention:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -162,13 +174,15 @@ class Exp_Main(Exp_Basic):
                 else:
                     if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                             outputs = self.model(batch_x)
+
+                    elif 'VanDerPol' in self.args.model:
+                        outputs, hidden = self.model(batch_x, hidden)
                     else:
                         if self.args.output_attention:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
                             
                         else:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark, batch_y)
-                    # print(outputs.shape,batch_y.shape)
                     f_dim = -1 if self.args.features == 'MS' else 0
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
@@ -232,6 +246,7 @@ class Exp_Main(Exp_Basic):
             os.makedirs(folder_path)
 
         self.model.eval()
+        hidden = None
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(test_loader):
                 batch_x = batch_x.float().to(self.device)
@@ -246,8 +261,12 @@ class Exp_Main(Exp_Basic):
                 # encoder - decoder
                 if self.args.use_amp:
                     with torch.cuda.amp.autocast():
-                        if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
+                        if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN':
                             outputs = self.model(batch_x)
+                        
+                        elif 'VanDerPol' in self.args.model:
+                            outputs, hidden = self.model(batch_x, hidden)
+
                         else:
                             if self.args.output_attention:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -256,6 +275,10 @@ class Exp_Main(Exp_Basic):
                 else:
                     if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                             outputs = self.model(batch_x)
+
+                    elif 'VanDerPol' in self.args.model:
+                        outputs, hidden = self.model(batch_x, hidden)
+
                     else:
                         if self.args.output_attention:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -324,6 +347,7 @@ class Exp_Main(Exp_Basic):
         preds = []
 
         self.model.eval()
+        hidden = None
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(pred_loader):
                 batch_x = batch_x.float().to(self.device)
@@ -339,6 +363,9 @@ class Exp_Main(Exp_Basic):
                     with torch.cuda.amp.autocast():
                         if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                             outputs = self.model(batch_x)
+                        
+                        elif 'VanDerPol' in self.args.model:
+                            outputs, hidden = self.model(batch_x, hidden)
                         else:
                             if self.args.output_attention:
                                 outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
@@ -347,6 +374,8 @@ class Exp_Main(Exp_Basic):
                 else:
                     if 'Linear' in self.args.model or 'TST' in self.args.model or 'RNN' in self.args.model:
                         outputs = self.model(batch_x)
+                    elif 'VanDerPol' in self.args.model:
+                        outputs, hidden = self.model(batch_x, hidden)
                     else:
                         if self.args.output_attention:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]

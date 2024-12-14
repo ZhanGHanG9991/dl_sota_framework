@@ -92,6 +92,12 @@ if __name__ == '__main__':
     parser.add_argument('--devices', type=str, default='0,1,2,3', help='device ids of multile gpus')
     parser.add_argument('--test_flop', action='store_true', default=False, help='See utils/tools for usage')
 
+    # VanDerPol
+    parser.add_argument('--alpha1', type=float, default=0.1, help='alpha1')
+    parser.add_argument('--alpha2', type=float, default=0.1, help='alpha2')
+    parser.add_argument('--W', type=float, default=0.1, help='W')
+    parser.add_argument('--alpha3', type=float, default=0.1, help='alpha3')
+
     args = parser.parse_args()
 
     # random seed

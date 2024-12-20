@@ -52,7 +52,7 @@ class RNNwithODE(nn.Module):
         if self.h_tmp is None:
             self.h_tmp = torch.zeros(x.size(0), self.seq_len, self.in_dim).to(x.device)
         
-        t_span = torch.linspace(0, 0.01, 5, device=hidden.device)
+        t_span = torch.linspace(0, 0.1, 5, device=hidden.device)
         self.h_tmp = x
         hidden[0], _ = self.rnn(x)
         hidden_out = odeint(self.ode_func, hidden, t_span, method='euler')

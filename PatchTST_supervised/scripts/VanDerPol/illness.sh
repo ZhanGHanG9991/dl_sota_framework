@@ -40,5 +40,9 @@ do
       --des 'Exp' \
       --train_epochs 100\
       --lradj 'constant'\
+      --alpha1 0.1\
+      --alpha2 0.1\
+      --W 0.1\
+      --alpha3 0.1\
       --itr 1 --batch_size 16 --learning_rate 0.0025 >logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done

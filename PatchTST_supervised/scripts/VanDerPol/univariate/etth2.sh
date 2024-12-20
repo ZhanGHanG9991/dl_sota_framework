@@ -11,7 +11,7 @@ if [ ! -d "./logs/LongForecasting/univariate" ]; then
 fi
 
 seq_len=336
-model_name=PatchTST
+model_name=VanDerPol
 
 root_path_name=./dataset/
 data_path_name=ETTh2.csv
